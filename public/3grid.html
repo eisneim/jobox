@@ -1,0 +1,248 @@
+<!DOCTYPE html><!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+ 
+<style type="text/css">
+
+/* Defaults -----------------*/
+.clearfix:before,
+.clearfix:after {
+    content: ' ';
+    display: table;
+}
+.clearfix:after {
+    clear: both;
+}
+
+body, html {
+    padding: 0;
+    margin: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #222;
+}
+a {
+    text-decoration: none;
+    color: purple;
+}
+section, header {
+    padding: 4%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+header {
+    background-color: #f0f0f0;
+}
+
+[role="navigation"]     { background-color: #ddd; }
+[role="main"]           { background-color: #fafafa; }
+[role="complementary"]  { background-color: #eee; }
+
+/* menu buttons */
+.off-canvas-navigation ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.off-canvas-navigation a {
+    display: inline-block;
+    padding: 20px;
+    min-width: 60px;
+    text-align: center;
+    color: #fff;
+}
+.menu-item      { float: left; background: #ddd; }
+.sidebar-item   { float: right; background: #eee; }
+/* Defaults -----------------*/
+
+
+
+/* Off Canvas -----------------*/
+
+.container {
+    overflow: hidden;
+    width: 100%;
+}
+
+[role="navigation"],
+[role="main"],
+[role="complementary"] {
+    position: relative;
+    display: block;
+    -webkit-transition: .2s all ease;
+    transition: .2s all ease;
+}
+
+    /* js enabled / Default state  */
+    .js [role="navigation"] {
+        margin-left: -100%;
+        float: left;
+        z-index: 2;
+
+        padding-bottom: 25em;
+    }
+    .js [role="main"] {
+        margin-left: 0;
+        float: left;
+        z-index: 3;
+
+        padding-bottom: 25em;
+    }
+    .js [role="complementary"] {
+        margin-right: -200%;
+        float: left;
+        z-index: 2;
+    }
+
+    /* When .active-nav shift panels to right */
+    .active-nav [role="navigation"] {
+        margin-left: 0;
+        width: 80%;
+    }
+    .active-nav [role="main"] {
+        margin-right: -100%;
+    }
+    .active-nav [role="complementary"] {
+        margin-right: -100%;
+        float: right;
+    }
+
+    /* When .active-panel shift panels left */
+    .active-panel [role="navigation"] {
+        margin-left: -200%;
+    }
+    .active-panel [role="main"] {
+        /* show a little bit of main pane*/
+        margin-left: -90%;
+    }
+    .active-panel [role="complementary"] {
+        margin-left: 0;
+        width: 90%;
+    }
+
+    /* Medium Viewport Styles */
+    @media screen and ( min-width: 42em ) {
+        /* For medium size viewports, we'll have the navigation panel show by default and hide the sidebar. */
+        .js [role="navigation"] {
+            width: 30%;
+            margin-left: 0;
+        }
+        .js [role="main"] {
+            width: 70%;
+            float: left;
+        }
+        .js [role="complementary"] {
+            width: 30%;
+        }
+        /* hide menu button */
+        .menu-button { display: none !important; }
+
+        /* When .active-sidebar shift panels left */
+        .active-panel [role="navigation"] {
+            margin-left: -100%;
+        }
+        .active-panel [role="main"] {
+            margin-left: 0;
+            width: 70%;
+        }
+        .active-panel [role="complementary"] {
+            margin-right: -70%;
+            width: 30%;
+        }
+    }
+
+    /* Large Viewport Styles */
+    @media screen and ( min-width: 57em ) {
+        .sidebar-button { display: none !important; }
+
+        /* show all panels and adjust padding */
+        .js [role="navigation"] {
+            width: 25%;
+            margin-left: 0;
+            float; left;
+        }
+        .js [role="main"] {
+            width: 50%;
+            padding: 2%;
+        }
+        .js [role="complementary"] {
+            width: 25%;
+            margin-right: 0;
+            float: right;
+            padding: 2%;
+        }
+
+    }
+
+
+/* Off Canvas -----------------*/
+</style>  
+</head>
+<body>  
+  
+<div id="page">
+    <div class="container">
+        <header id="header">
+          <hgroup>
+            <h1 class="page-title">Off Canvas</h1>
+            <h3>Dual side panels</h3>
+          </hgroup>
+        </header>
+        <nav class="off-canvas-navigation clearfix">
+            <ul>
+                <li class="menu-item"><a class='menu-button' href="#menu">Menu</a></li>
+                <li class="sidebar-item"><a class='sidebar-button' href="#sidebar">Extra</a></li>
+            </ul>
+        </nav>
+
+        <!-- Aside Left -->
+        <nav id="menu" role="navigation">
+            <p>Menu Panel</p>
+        </nav>
+
+        <!-- Main Content -->
+        <section role="main">
+            <h1>Main</h1>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eleifend erat vitae elit tincidunt tempus. Fusce consectetur eros at elit facilisis eu mattis dolor ullamcorper. Sed scelerisque, enim ut eleifend elementum, sem dolor lobortis lorem, sit amet ullamcorper est odio eu leo. Fusce vel blandit elit. Fusce vel purus ac nunc cursus vulputate. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ac ipsum justo, eget sodales nibh. Sed egestas elit id libero ullamcorper sed ultricies mi aliquam. Mauris ultrices viverra magna quis posuere. Proin at quam a nibh tristique varius. Morbi leo eros, luctus quis tristique ut, pulvinar vitae mi. Cras elementum rutrum lacus, elementum sagittis nibh viverra eu. Curabitur vel urna sem.
+            </p>
+        </section>
+
+        <!-- Aside Right -->
+        <section id="sidebar" role="complementary">
+            <p>Side Panel</p>
+        </section>
+    </div>
+</div>
+  <script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+
+    "use strict";
+
+  // js enabled
+    $( 'html' ).removeClass( 'no-js' ).addClass( 'js' );
+
+$(function(){
+
+    // Off Canvas pattern
+
+    
+
+    $( '.menu-button' ).on( 'click', function( e ){
+        e.preventDefault();
+        $( 'body' ).toggleClass( 'active-nav' ).removeClass( 'active-panel' );
+    });
+
+    $( '.sidebar-button' ).on( 'click', function( e ){
+        e.preventDefault();
+        $( 'body' ).toggleClass( 'active-panel' ).removeClass( 'active-nav' );
+    });
+
+});
+</script>
+
+</body>
+</html>
