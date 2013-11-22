@@ -1,39 +1,24 @@
 
-/**
- * Module dependencies.
- */
-
 var express = require('express');
-var mongoose = require('mongoose');
 var http = require('http');
 var path = require('path');
-
+//session
+var MongoStore = require('connect-mongo')(express);
+var flash = require('connect-flash');
 var app = express();
 
-// all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+var mongoose = require('mongoose');
 
-// development only
-if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
-}
-// ========db ==
-// 
+// establish a db connection 
 mongoose.connect('mongodb://localhost/job-site');
+// ===== db
 var Schema= mongoose.Schema;
 var UserSchema = new Schema({
-		name:{ type: String, trim: true ,unique:true},
-		email:{ type: String, required: '{PATH} 是必填项!' },
-		password:String,
+		username:{ type: String, trim: true },
+		email:{ type: String,unique:'此email地址已存在'},
+		password:{type:String},
+		salt: String,
+    	hash: String,
 		phone:{ 
 			type: Number, 
 			max:[13, ' `{PATH}`项的值: ({VALUE}) 超过了最大值 ({MAX}).']
@@ -57,8 +42,7 @@ var UserSchema = new Schema({
 		category:String,
 		hire_number:Number,
 		require_exp:String,
-		start:String,
-		end:String,
+		isend:{ type: Boolean, default: false },
 		vote:Number,
 		description:String
 	});
@@ -66,19 +50,88 @@ var DB={
 		user: mongoose.model('User',UserSchema),
 		job:mongoose.model('Job',JobSchema)
 	}
-
 //======routes == 
 var routes = require('./routes')(DB);
+var passport = require('./auth')(DB);
 
+// all environments
+app.set('port', process.env.PORT || 3000);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+app.use(express.favicon());
+app.use(express.logger('dev'));
+//use session
+app.use(express.cookieParser('somestring'));
+app.use(express.session({
+	secret:'saklsd890lldfqwxcgqnjlds',
+	store:new MongoStore({
+		mongoose_connection: mongoose.connection
+	}),
+	cookie: { maxAge: 60000 }
+}));
+app.use(flash());
+// ======auth===================
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
+app.use(app.router);
+app.use(express.static(path.join(__dirname, 'public')));
+
+// development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
+// route filter
+function auth_filter(req, res, next) {
+  if (req.session.passport.user) {
+    next();
+  } else {
+    req.flash('error','请登录');
+    res.redirect('/');
+  }
+}
+function publish_filter(req,res,next){
+	if(req.session.passport.user){
+		var user = req.session.passport.user;
+		if (user.publisher) {
+			next();
+		}else{
+			req.flash('error','您不是发布者，无法发布招聘信息');
+    		res.redirect('/');
+		}
+	}else{
+		req.flash('error','你还没登录呢');
+    	res.redirect('/');
+	}
+}
 
 app.get('/', routes.home);
+app.get('/job/new',publish_filter,routes.new_job);
+// app.post('/new', routes.new_job_post);
+
+// app.get('/job/:name', routes.showjob);
+
+// app.get('/login', routes.login);
+app.post('/login',passport.authenticate('local',{
+	failureRedirect:'/',
+	successRedirect:'/dashboard',
+	failureFlash: '用户名或者密码不正确.'
+}));
+
+app.get('/signup', routes.signup);
+app.post('/signup', routes.signup_post);
+
+app.get('/logout', routes.logout);
+app.get('/dashboard',auth_filter,routes.dashboard);
+// app.get('/apply', routes.apply);
 // routes.test();
 
-app.get('/1234',function(req,res){
-	res.send('sdfs');
+app.get('/test',function(req,res){
+	res.send(req.session.passport.user);
 });
-
-
 
 //======server ======
 http.createServer(app).listen(app.get('port'), function(){

@@ -8,7 +8,11 @@
   "dependencies": {
     "express": "3.4.4",
     "jade": "*",
-    "mongoose":"2.7.0"
+    "mongoose": "2.7.0",
+    "connect-mongo": "~0.4.0",
+    "passport": "~0.1.17",
+    "passport-local": "~0.1.6",
+    "connect-flash": "~0.1.1"
   },
   "devdependencies": {
     "nodemon": "~0.7.10"

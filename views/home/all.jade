@@ -1,0 +1,145 @@
+!!! 5
+//if lt IE 7
+  html.no-js.lt-ie9.lt-ie8.lt-ie7  
+//if IE 7
+  html.no-js.lt-ie9.lt-ie8  
+//if IE 8
+  html.no-js.lt-ie9  
+// [if gt IE 8] <!
+html.no-js
+  // <![endif]
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(name='description', content='使用NODEjs开发的招聘网站')
+    meta(name='author', content='Eisneim Terry(www.eisneim.com)')
+    link(rel='stylesheet', type='text/css', href='css/style.css')
+    title= title 
+  body
+    #page
+      .container
+        .colorbar
+        header#header
+          .warper
+            nav.top-nav
+              form(id="loginform", method="POST", action="#")
+                ul
+                  li: input(type="text" name="email" placeholder="Email")
+                  li: input(type="text" name="password" placeholder="密码")
+                  li: a(type="submit") 登录
+                  li: a(href="#") 注册
+            h1.page-title JobBox工作盒
+            
+        nav.off-canvas-navigation.clearfix
+          ul
+            li.menu-item
+              a.menu-button(href='#menu') 工作类别
+            li.sidebar-item
+              a.sidebar-button(href='#sidebar') 菜单
+
+        // Aside Left
+        nav#menu(role='navigation')
+          .navwarper
+            ul.cate-ul
+              li 
+                a(href="#", target="_blank")
+                  .nav-mark.nav-mark-active
+                  | IT互联网
+              li 
+                a(href="#", target="_blank") 
+                  .nav-mark
+                  | 金融财经
+              li 
+                a(href="#", target="_blank") 
+                  .nav-mark
+                  | 服务业
+              li 
+                a(href="#", target="_blank") 
+                  .nav-mark
+                  | 旅游业
+              li 
+                a(href="#", target="_blank") 
+                  .nav-mark
+                  | 农业
+              li 
+                a(href="#", target="_blank") 
+                  .nav-mark
+                  | 金融财经
+        // Main Content
+
+        section(role='main')
+          //- h1 最新招聘信息
+          .mainwarper
+
+            ul.joblist-ul
+              .jobfilter
+                form(id="jobfilter", method="post", action="#")
+                  ul
+                    li
+                      span 城市:
+                      select(name="city")
+                        option(value="上海") 上海
+                        option(value="北京") 北京
+                        option(value="成都") 成都
+                        option(value="广州") 广州
+                    li
+                      span 月薪范围:
+                      select(name="salary")
+                        option(value="1000-3000") 1000-3000
+                        option(value="3000-5000") 3000-5000
+                        option(value="5000-7000") 5000-7000
+                        option(value="7000-9000") 7000-9000
+                        option(value="9000-12000") 9000-12000 
+                        option(value="12000以上") 12000以上
+                      span ￥
+              li
+                h2 
+                  a(href="http://baidu.com" target="_blank") 招聘web前端开发
+                
+                ul.joblist-detail
+                  li 上海
+                  li 公司:英特尔科技
+                  li 月薪:8000-12000
+              li
+                h2 
+                  a(href="#") PHP后台开发
+                ul.joblist-detail
+                  li 上海
+                  li 公司:XXXX科技
+                  li 月薪:4000-8000
+              li
+                h2 
+                  a(href="#") 寻找高级硬件工程师
+                ul.joblist-detail
+                  li 上海
+                  li 公司:XXXX科技
+                  li 月薪:4000-8000
+
+              li
+                h2 
+                  a(href="#") FPGA工程
+                ul.joblist-detail
+                  li 上海
+                  li 公司:XXXX科技
+                  li 月薪:4000-8000
+
+        // Aside Right
+        section#sidebar(role='complementary')
+          .right-sidebar
+            p Side Panel
+    script(type='text/javascript', src='js/jquery.js')
+    script(type='text/javascript')
+      "use strict";
+      // js enabled
+      $( 'html' ).removeClass( 'no-js' ).addClass( 'js' );
+      $(function(){
+        // Off Canvas pattern
+        $( '.menu-button' ).on( 'click', function( e ){
+          e.preventDefault();
+          $( 'body' ).toggleClass( 'active-nav' ).removeClass( 'active-panel' );
+        });
+        $( '.sidebar-button' ).on( 'click', function( e ){
+          e.preventDefault();
+          $( 'body' ).toggleClass( 'active-panel' ).removeClass( 'active-nav' );
+        });
+      });

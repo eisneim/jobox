@@ -1,0 +1,24 @@
+extends ../layout
+
+block content 
+	section(role='main' style="margin:30px auto;float:none;max-width:500px")
+		.mainwarper
+			ul.joblist-ul
+				.jobfilter(style="text-align:center")
+					h3 新用户注册
+				li
+					form.clearfix(id="signup-form" method="POST" action="/signup")
+						input(type="text" name="email" placeholder="Email")
+						input(type="text" name="username" placeholder="用户名")
+						input(type="password" name="password" placeholder="密码")
+						input(type="password" name="password_confirm" placeholder="确认密码")
+						label.radio-button-label
+							input(type="radio" name="role" value="employee")
+							.zexeo-radio-button
+							|我要寻找工作
+						label.radio-button-label
+							input(type="radio" name="role" value="employer")
+							.zexeo-radio-button
+							|我要招聘人才
+						br
+						button.btn_blue(type="submit" style="float:right") 注册

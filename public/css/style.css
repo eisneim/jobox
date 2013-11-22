@@ -12,10 +12,12 @@
 .clearfix:after {
     clear: both;
 }
-
-body, html {
+html,body{
     padding: 0;
     margin: 0;
+    min-height: 100%;
+}
+body{
     font-family: "微软雅黑",Helvetica, Arial, sans-serif;
     font-family: "Microsoft YaHei" ! important;
     color: #fafafa;
@@ -25,6 +27,10 @@ body, html {
     /*background-color: #4D505B;*/
 }
 #page{
+    /*z-index: 2;*/
+    padding-bottom: 30px;
+}
+body{
     background-image: url('../img/items-bg.png');
     background-repeat: no-repeat;
     background-position: bottom;
@@ -40,6 +46,22 @@ ul,li{
     margin:0;
     padding: 0;
     list-style: none;
+}
+hr{
+    border:none;
+    border-bottom:solid 1px #26272D;
+}
+footer,footer a{
+    color: #26272D;
+}
+html{
+    position: relative;
+}
+footer{
+    width: 100%;
+    height:60px;
+    position: absolute;
+    bottom: 0px;
 }
 header {
     padding: 15px;
@@ -75,6 +97,7 @@ header h1{
     margin:0 auto;
     padding: 0;
 }
+
 .top-nav{
     /*width: 200px;*/
     margin-top: 12px;
@@ -88,6 +111,7 @@ header h1{
 #loginform input{
     width: 150px;
     height: 30px;
+    color:#ddd;
     padding-left: 10px;
     border-radius: 3px;
     outline: none;
@@ -157,6 +181,13 @@ header h1{
     border:solid 1px #35373d;
     border-bottom:solid 2px #35373d;
 }
+.sidebar-header{
+    border-radius: 6px 6px 0 0 ;
+    background-color: #3a3d49;
+    padding: 15px;
+    margin:0;
+    border-bottom: solid 1px #2f2f2f;
+}
 /*=====*/
 .mainwarper{
     margin:30px 15px 15px 15px;
@@ -177,6 +208,10 @@ header h1{
     border-radius: 6px 6px 0px 0px; 
     background-color: #189D50;
     border-bottom: solid 1px #109040;
+}
+.joblist-ul>.jobfilter>h3{
+    margin:5px 15px 5px 15px;
+    font-size: 30px;
 }
 .joblist-ul > .jobfilter ul li{
     display: inline-block;
@@ -202,15 +237,73 @@ ul.joblist-detail>li{
     color: #dadada;
 }
 
+/*===== for inputs  ===*/
+section input{
+    border-radius: 6px;
+    padding-left: 5px;
+    height: 35px;
+    outline: none;
+    font-size: 20px;
+    line-height: 30px;
+    margin:10px;
+}
+section label{
+    font-size: 20px;
+    margin:10px;
+}
+/* add new job*/
+#new_job input[name="title"]{
+    margin-top: 15px;
+    width: 80%;
+}
+#new_job input[name="hire_number"]{
+    width: 10%;
+}
+#new_job input[name="require_exp"]{
+    width: 40%;
+}
+#new_job input,textarea{
+    border:solid 1px #087D30;
+    background-color: #189D50;
+    color: #ddd;
+}
 
-
-
-
-
-
-
-
-
+#new_job textarea{
+    outline: none;
+    width: 100%;
+    min-height: 200px;
+    border-radius: 6px;
+    font-size: 16px;
+}
+#new_job select{
+  outline: none;
+  appearance:none;
+  border: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  color: #aaa;
+  border: solid 1px #858C92;
+  border-radius: 6px;
+  min-width: 30%;
+  padding:5px 5px;
+  font-size: 16px;
+  background: #40506f url('../img/downarrow.png') no-repeat scroll right center;
+}
+select:hover, select:active {
+  border-color: #28AD60;
+}
+#signup-form{
+    width: 90%;
+    margin: 15px auto 5px;
+}
+#signup-form input[type="text"],
+#signup-form input[type="password"]{
+    width: 100%;
+    border:solid 1px #087D30;
+    background-color: #189D50;
+    color: #ddd;
+    margin-left: 5px;
+}
 
 
 
@@ -241,14 +334,14 @@ ul.joblist-detail>li{
         float: left;
         z-index: 2;
 
-        padding-bottom: 25em;
+        padding-bottom: 1em;
     }
     .js [role="main"] {
         margin-left: 0;
         float: left;
         z-index: 3;
 
-        padding-bottom: 25em;
+        padding-bottom: 1em;
     }
     .js [role="complementary"] {
         margin-right: -200%;
@@ -282,7 +375,205 @@ ul.joblist-detail>li{
         width: 90%;
     }
 
-    /* Medium Viewport Styles */
+    
+/*===== radio button ====*/
+input[type=radio] {
+  border: 0;
+    clip: rect(0 0 0 0);
+    height: 2rem;
+    margin: 0 -2rem -2rem 0;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 2rem;
+  opacity: 0.001;
+}
+
+.radio-button-label {
+  display: inline-block;
+  line-height: 2rem;
+  -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.zexeo-radio-button {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  width: 2rem;
+  height: 2rem;
+  
+  -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Background */
+.zexeo-radio-button:before {
+  content: '';
+  position: absolute;
+  box-sizing: border-box;
+    width: 2rem;
+    height: 2rem;
+  background: #e5e9e9;
+    border: 1px solid #a5a8a8;
+    border-radius: 100%;
+  cursor: pointer;
+  
+    -webkit-box-shadow: inset 0 1px #fff;
+    box-shadow: inset 0 1px #fff;
+}
+
+/* Checkmark */
+.zexeo-radio-button:after {
+  opacity: 0;
+    content: '';
+    position: absolute;
+  width: 1rem;
+  height: 1rem;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  background: #16A89E;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 100%;
+  cursor: pointer;
+  box-shadow: 0 1px rgba(255,255,255,0.50);
+}
+
+input[type=radio]:checked + .zexeo-radio-button:after {
+    opacity: 1;
+}
+
+:focus + .zexeo-radio-button:before {
+  border: 1px solid #0940fd;
+  -webkit-box-shadow: 0 0 0 2px #6fb5f1;
+  box-shadow: 0 0 0 2px #6fb5f1;
+}
+/*======== btn =========*/
+.btn_blue {
+    outline: none;
+    cursor: pointer;
+  margin: 0px;
+  border: none;
+  font-size: 24px;
+  color: #eee;
+  padding: 8px 30px;
+  margin: 10px 0;
+  border-radius: 6px;
+  box-shadow: #5FA1CE 0px 3px 0px 0px;
+  background-color: #76BCEB;
+}
+
+.btn_blue:hover {
+  background-color: #9ACDF0;
+}
+
+.btn_blue:active {
+  box-shadow: #transparent 0px -6px 0px 0px;
+  background-color: #5fA1CE;
+}
+.btn-sm{
+  outline: none;
+    cursor: pointer;
+    text-shadow:none;
+  margin: 0px;
+  border: none;
+  font-size: 12px;
+  color: #eee;
+  padding: 5px 20px;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+.btn-green{
+    background-color: #28AD60;
+    box-shadow: #089445 0px 2px 0px 0px;
+}
+.btn-green:hover {
+  background-color: #189D50;
+}
+.btn-green:active{
+   box-shadow: #transparent 0px -2px 0px 0px;
+  background-color: #28AD60; 
+}
+.btn-cyan{
+    background-color: #14A085;
+    box-shadow: #049075 0px 2px 0px 0px;
+}
+.btn-cyan:hover {
+  background-color: #109780;
+}
+.btn-cyan:active{
+   box-shadow: #transparent 0px -2px 0px 0px;
+  background-color: #109780; 
+}
+/*==== this is for my notify animation ===*/
+/*===============*/
+.msgbox,.errbox{
+  min-height: 100px;
+  /*width: 540px;*/
+  width: 40%;
+  min-width: 400px;
+  position: fixed;
+  left: 0;
+  bottom: 30px;
+  
+  padding: 15px 50px 10px 10px;
+  z-index: 6;
+  text-align: right;
+}
+.msgbox{
+  background-color: #2DCC70;
+}
+.errbox{
+  /*background-color: #14A085;*/
+  background-color: #E74C3C;
+}
+.msgbox p,.errbox p{
+  font-size: 26px;
+  color: #eee;
+}
+.close-icon{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: 100;
+  color: #eee;
+  font-family: 'Helvetica';
+  cursor: pointer;
+}
+.moving-lef-tanimation{
+  -webkit-animation: moveleft_sequence .5s ease-out; /* Safari/Chrome */
+  -moz-animation: moveleft_sequence .5s ease-out; /* Firefox */
+  -o-animation: moveleft_sequence .5s ease-out; /* Opera */
+  animation: moveleft_sequence .5s ease-out; /* IE10+ and Future Browsers */
+}
+@-webkit-keyframes moveleft_sequence {
+  from { left:-600px; }
+  to { left:0; }
+}
+@-moz-keyframes moveleft_sequence {
+  from { left:-600px; }
+  to { left:0; }
+}
+@-o-keyframes moveleft_sequence {
+  from { left:-600px; }
+  to { left:0; }
+}
+@keyframes moveleft_sequence {
+  from { left:-600px; }
+  to { left:0; }
+}
+
+
+
+
+/* Medium Viewport Styles */
     @media screen and ( min-width: 42em ) {
         /* For medium size viewports, we'll have the navigation panel show by default and hide the sidebar. */
         .js [role="navigation"] {
@@ -311,6 +602,9 @@ ul.joblist-detail>li{
             margin-right: -60%;
             width: 40%;
         }
+        .msgbox,.errbox{
+          width: 90%;
+        }
     }
 
     /* Large Viewport Styles */
@@ -333,8 +627,16 @@ ul.joblist-detail>li{
             float: right;
             /*padding: 2%;*/
         }
+        /*.msgbox,.errbox{
+          width: 40%;
+        }*/
 
     }
-
+    @media screen and ( min-width: 768px ) {
+        .msgbox,.errbox{
+          width: 50%;
+        }
+      
+     }
 
 /* Off Canvas -----------------

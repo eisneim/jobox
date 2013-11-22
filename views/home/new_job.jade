@@ -1,0 +1,41 @@
+extends ../layout
+
+block content
+  // Main Content
+  section(role='main' style="margin:30px auto;float:none;")
+    //- h1 最新招聘信息
+    .mainwarper
+
+      ul.joblist-ul
+        .jobfilter
+          h3 添加新招聘信息
+        li
+          form(id="new_job", method="POST", action="/")
+            label(for="title") 标题:
+            input(type="text" name="title")
+            br 
+            label(for="company") 公司:
+            input(type="text" name="company")
+            label(for="city") 城市：
+            select(name="city") 
+              option(value="上海") 上海
+              option(value="北京") 北京
+              option(value="成都") 成都
+            br
+            label(for="salary") 工资：
+            select(name="salary")
+              option(value="1000-3000") 1000-3000
+              option(value="3000-5000") 2000-5000
+              option(value="5000-8000") 5000-7000
+            label(for="category") 所在分类：
+            select(name="category")
+              option(value="IT互联网") IT互联网
+              option(value="金融") 金融
+            br
+            label(for="hire_number") 招聘人数:
+            input(type="text" name="hire_number" placeholder="数字")
+            label(for="require_exp") 经验要求:
+            input(type="text" name="require_exp" placeholder="例如：工作两年")
+
+            textarea(name="description" placeholder="招聘的详细要求和一些信息")
+            button.btn_blue(type="submit" ) 提交
