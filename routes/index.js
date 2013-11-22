@@ -5,7 +5,7 @@ module.exports = function(DB){
 
 
 	route.home = function(req,res){
-		// console.log(JSON.stringify(req.flash('alert'));
+		// console.log(JSON.stringify(res));
 			// console.log(req.flash('alert'));
 		res.render('home/index', { 
 			title: 'JobBox工作盒 - nodeJS 实战工程',
@@ -77,7 +77,7 @@ module.exports = function(DB){
 	}
 	route.logout = function(req,res){
 		req.session.passport.user = null;
-		req.flash('error', '您已登出');
+		req.flash('message', '您已登出');
 		res.redirect('/');
 	}
 	// 

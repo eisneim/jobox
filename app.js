@@ -11,7 +11,7 @@ var mongoose = require('mongoose');
 
 // establish a db connection 
 mongoose.connect('mongodb://localhost/job-site');
-// ===== db
+// ========================== db setup ============
 var Schema= mongoose.Schema;
 var UserSchema = new Schema({
 		username:{ type: String, trim: true },
@@ -54,6 +54,7 @@ var DB={
 var routes = require('./routes')(DB);
 var passport = require('./auth')(DB);
 
+
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -70,6 +71,7 @@ app.use(express.session({
 	cookie: { maxAge: 60000 }
 }));
 app.use(flash());
+app.use(express.csrf());
 // ======auth===================
 app.use(passport.initialize());
 app.use(passport.session());
@@ -77,6 +79,26 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+
+// =================================app vars meddleware======
+ app.use(function(req, res, next)
+	{
+        // res.locals.req = req;
+        // res.locals.session = req.session;
+        // console.log(JSON.stringify(req.session));
+        res.locals.test_val = 'test value';
+        res.locals.csrf = req.session ? req.session._csrfSecret : '';
+        console.log( 'secret: '+req.session._csrfSecret  );
+        next();
+    });
+
+app.locals({
+    token: function(req, res) {
+        return req.session._csrfSecret;
+    },
+
+});
+// ===========before router is middleware === 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -84,7 +106,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
-// route filter
+//==========================route filter===========
 function auth_filter(req, res, next) {
   if (req.session.passport.user) {
     next();
@@ -108,6 +130,8 @@ function publish_filter(req,res,next){
 	}
 }
 
+
+// =================================routes =========
 app.get('/', routes.home);
 app.get('/job/new',publish_filter,routes.new_job);
 // app.post('/new', routes.new_job_post);

@@ -11,6 +11,7 @@ block content
           h3 添加新招聘信息
         li
           form(id="new_job", method="POST", action="/")
+            input(type='hidden', name='_csrfSecret', value="#{csrf}")
             label(for="title") 标题:
             input(type="text" name="title")
             br 

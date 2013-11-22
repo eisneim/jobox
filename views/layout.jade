@@ -30,6 +30,7 @@ html.no-js
                     a(href="/logout") 登出
               else
                 form(id="loginform", method="POST", action="/login")
+                  input(type='hidden', name='_csrf', value="#{csrf}" )
                   ul
                     li: input(type="text" name="email" placeholder="Email")
                     li: input(type="password" name="password" placeholder="密码")
