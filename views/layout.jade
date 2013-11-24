@@ -28,6 +28,9 @@ html.no-js
                     a(href="/dashboard")=auth.username
                   li
                     a(href="/logout") 登出
+                  if auth.publisher
+                    li
+                      a(href="/job/new") 发布
               else
                 form(id="loginform", method="POST", action="/login")
                   input(type='hidden', name='_csrf', value="#{csrf}" )
@@ -43,11 +46,11 @@ html.no-js
         hr
         p 版权所有&copy;则修网 
           a(href="http://zexeo.com" target="_blank") www.zexeo.com 
-    if message[0]
+    if message.length!== 0
       .msgbox.moving-lef-tanimation
         p=message
         span.close-icon &#10005;
-    else if error[0]
+    else if error.length!== 0
       .errbox.moving-lef-tanimation
         p=error
         span.close-icon &#10005;

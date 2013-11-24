@@ -12,7 +12,8 @@
     "connect-mongo": "~0.4.0",
     "passport": "~0.1.17",
     "passport-local": "~0.1.6",
-    "connect-flash": "~0.1.1"
+    "connect-flash": "~0.1.1",
+    "express-validator": "~1.0.0"
   },
   "devdependencies": {
     "nodemon": "~0.7.10"

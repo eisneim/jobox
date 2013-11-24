@@ -8,9 +8,9 @@ block content
 
       ul.joblist-ul
         .jobfilter
-          h3 添加新招聘信息
+          h3 修改招聘信息
         li
-          form(id="new_job", method="POST", action="/job/new")
+          form(id="new_job", method="POST", action="/job/edit/#{job._id}")
             if (form_err.length)!==0
               .form_err
                 span.close-icon &#10005;
@@ -19,28 +19,37 @@ block content
                     li=err.msg
             input(type='hidden', name='_csrf', value="#{csrf}")
             label(for="title") 标题:
-            input(type="text" name="title")
+            input(type="text" name="title" value="#{job.title}")
             br 
             label(for="company") 公司:
-            input(type="text" name="company")
+            input(type="text" name="company" value="#{job.company}")
             label(for="city") 城市：
             select(name="city") 
               each city in city_array
-                option(value="#{city}")=city
+                if city == job.city
+                  option(value="#{city}" selected)=city
+                else
+                  option(value="#{city}")=city
             br
             label(for="salary") 工资：
             select(name="salary")
               each salary in salary_array
-                option(value="#{salary}")=salary
+                if salary == job.salary
+                  option(value="#{salary}" selected)=salary
+                else
+                  option(value="#{salary}")=salary
             label(for="category") 所在分类：
             select(name="category")
               each category in category_array
-                option(value="#{category}")=category
+                if category == job.category
+                  option(value="#{category}" selected)=category
+                else
+                  option(value="#{category}")=category
             br
             label(for="hire_number") 招聘人数:
-            input(type="text" name="hire_number" placeholder="数字")
+            input(type="text" name="hire_number" placeholder="数字" value="#{job.hire_number}")
             label(for="require_exp") 经验要求:
-            input(type="text" name="require_exp" placeholder="例如：工作两年")
+            input(type="text" name="require_exp" placeholder="例如：工作两年" value="#{job.require_exp}")
 
-            textarea(name="description" placeholder="招聘的详细要求和一些信息")
+            textarea(name="description" placeholder="招聘的详细要求和一些信息") #{job.description}
             button.btn_cyan(type="submit" ) 提交

@@ -1,0 +1,7 @@
+==signup login validate form
+
+==how to handle db insert or query errors?
+
+==trim all inputs
+
+==sort db result not working

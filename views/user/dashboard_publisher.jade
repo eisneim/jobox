@@ -1,0 +1,51 @@
+extends ../layout
+
+block content 
+	nav.off-canvas-navigation.clearfix
+		ul
+			li.menu-item
+				a.menu-button(href='#menu') 左侧栏
+			li.sidebar-item
+				a.sidebar-button(href='#sidebar') 菜单
+	nav#menu(role='navigation')
+		.navwarper
+			ul.cate-ul
+				li 
+					a(href="#")
+						.nav-mark
+						| 开始
+	// Main Content
+	section(role='main')
+		//- h1 最新招聘信息
+		.mainwarper
+
+			ul.joblist-ul
+				.jobfilter
+					h2(style="text-align:center;") 我发布的招聘信息
+				if jobs.length == 0
+					li
+						h2 你目前还没有发布过招聘信息
+				else
+					each job in jobs 
+						li
+							h2=job.title
+							a.btn-grey.btn-sm(href="/job/delete/#{job._id}" style="margin-right:20px;") 删除
+							a.btn-cyan.btn-sm(href="/job/edit/#{job._id}") 编辑
+							ul.joblist-detail.applied_users
+								li
+									span Eisneim
+								li Email:
+									span eisneim1@gmail.com
+								li 手机:
+									span 13478782
+
+	// Aside Right
+	section#sidebar(role='complementary')
+		.right-sidebar
+			.sidebar-header
+				span 我申请的工作
+			p not yet 
+		.right-sidebar
+			.sidebar-header
+				span 最新用户
+			p 侧栏内容

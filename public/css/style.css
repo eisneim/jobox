@@ -234,9 +234,14 @@ ul.joblist-ul>li>h2{
 ul.joblist-detail>li{
     display: inline-block;
     margin-right: 15px;
-    color: #dadada;
+    color: #3A3D49;
 }
-
+ul.joblist-detail>li>span{
+    color: #4D505B;
+}
+.applied_users>li{
+  margin-top: 15px;
+}
 /*===== for inputs  ===*/
 section input{
     border-radius: 6px;
@@ -304,7 +309,15 @@ select:hover, select:active {
     color: #ddd;
     margin-left: 5px;
 }
-
+.form_err{
+  margin-top: 10px;
+  padding: 20px;
+  font-size: 18px;
+  background-color: #40506F;
+  border-radius: 6px;
+  border:solid 1px #30405F;
+  position: relative;
+}
 
 
 
@@ -454,27 +467,27 @@ input[type=radio]:checked + .zexeo-radio-button:after {
   box-shadow: 0 0 0 2px #6fb5f1;
 }
 /*======== btn =========*/
-.btn_blue {
+.btn_cyan {
     outline: none;
     cursor: pointer;
   margin: 0px;
   border: none;
-  font-size: 24px;
+  font-size: 20px;
   color: #eee;
   padding: 8px 30px;
   margin: 10px 0;
   border-radius: 6px;
-  box-shadow: #5FA1CE 0px 3px 0px 0px;
-  background-color: #76BCEB;
+  box-shadow: #049075 0px 3px 0px 0px;
+  background-color: #14A085;
 }
 
-.btn_blue:hover {
-  background-color: #9ACDF0;
+.btn_cyan:hover {
+  background-color: #109780;
 }
 
-.btn_blue:active {
+.btn_cyan:active {
   box-shadow: #transparent 0px -6px 0px 0px;
-  background-color: #5fA1CE;
+  background-color: #109780;
 }
 .btn-sm{
   outline: none;
@@ -510,6 +523,28 @@ input[type=radio]:checked + .zexeo-radio-button:after {
    box-shadow: #transparent 0px -2px 0px 0px;
   background-color: #109780; 
 }
+.btn-red{
+    background-color: #DF3130;
+    box-shadow: #B11516 0px 2px 0px 0px;
+}
+.btn-red:hover {
+  background-color: #cF2120;
+}
+.btn-red:active{
+   box-shadow: #transparent 0px -2px 0px 0px;
+  background-color: #cF2120; 
+}
+.btn-grey{
+    background-color: #4D505B;
+    box-shadow: #3A3D49 0px 2px 0px 0px;
+}
+.btn-grey:hover {
+  background-color: #3E4048;
+}
+.btn-grey:active{
+   box-shadow: #transparent 0px -2px 0px 0px;
+  background-color: #3E4048; 
+}
 /*==== this is for my notify animation ===*/
 /*===============*/
 .msgbox,.errbox{
@@ -526,7 +561,7 @@ input[type=radio]:checked + .zexeo-radio-button:after {
   text-align: right;
 }
 .msgbox{
-  background-color: #2DCC70;
+  background-color: #14A085;
 }
 .errbox{
   /*background-color: #14A085;*/

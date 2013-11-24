@@ -1,0 +1,57 @@
+extends ../layout
+
+block content
+  nav.off-canvas-navigation.clearfix
+          ul
+            li.menu-item
+              a.menu-button(href='#menu') 工作类别
+            li.sidebar-item
+              a.sidebar-button(href='#sidebar') 菜单
+  nav#menu(role='navigation')
+    .navwarper
+      ul.cate-ul
+        each category in category_array
+          li 
+            a(href="/category/#{ category.replace(/\//,'-') }")
+              //.nav-mark-active 
+              .nav-mark
+              | #{category}
+        
+  // Main Content
+
+  section(role='main')
+    //- h1 最新招聘信息
+    .mainwarper
+
+      ul.joblist-ul
+        .jobfilter
+          h2=job.title
+        li(style="margin-top:15px;")
+          ul.joblist-detail
+            li 
+              span #{job.city}
+            li 公司:
+              span #{job.company}
+            li 月薪:
+              span #{job.salary}
+            li 招聘人数:
+              span #{job.hire_number}
+            li 经验要求:
+              span #{job.require_exp}
+        li
+          p=job.description
+        if auth
+          if !auth.publisher 
+            li.clearfix
+              a.btn_cyan(href="/job/apply/#{job._id}" style="margin-top:20px;margin-bottom:10px;float:right;") 申请这份工作
+
+  // Aside Right
+  section#sidebar(role='complementary')
+    .right-sidebar
+      .sidebar-header
+        span 我申请的工作
+      p not yet 
+    .right-sidebar
+      .sidebar-header
+        span 最新用户
+      p 侧栏内容

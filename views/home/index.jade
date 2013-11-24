@@ -11,29 +11,22 @@ block content
     .navwarper
       ul.cate-ul
         li 
-          a(href="#", target="_blank")
-            .nav-mark.nav-mark-active
-            | IT互联网
-        li 
-          a(href="#", target="_blank") 
-            .nav-mark
-            | 金融财经
-        li 
-          a(href="#", target="_blank") 
-            .nav-mark
-            | 服务业
-        li 
-          a(href="#", target="_blank") 
-            .nav-mark
-            | 旅游业
-        li 
-          a(href="#", target="_blank") 
-            .nav-mark
-            | 农业
-        li 
-          a(href="#", target="_blank") 
-            .nav-mark
-            | 金融财经
+          a(href="/")
+            if active_category
+              .nav-mark
+            else
+              .nav-mark.nav-mark-active
+            |全部
+        each category in category_array
+          li 
+            a(href="/category/#{ category.replace(/\//,'-') }")
+              //.nav-mark-active
+              if active_category == category.replace(/\//,'-')
+                .nav-mark.nav-mark-active
+              else
+                .nav-mark
+              | #{category}
+        
   // Main Content
 
   section(role='main')
@@ -47,51 +40,31 @@ block content
               li
                 span 城市:
                 select(name="city")
-                  option(value="上海") 上海
-                  option(value="北京") 北京
-                  option(value="成都") 成都
-                  option(value="广州") 广州
+                  each city in city_array
+                    option(value="#{city}") #{city}
               li
                 span 月薪范围:
                 select(name="salary")
-                  option(value="1000-3000") 1000-3000
-                  option(value="3000-5000") 3000-5000
-                  option(value="5000-7000") 5000-7000
-                  option(value="7000-9000") 7000-9000
-                  option(value="9000-12000") 9000-12000 
-                  option(value="12000以上") 12000以上
+                  each salary in salary_array
+                    option(value="#{salary}") #{salary}
                 span ￥
-        li
-          h2 
-            a(href="http://baidu.com" target="_blank") 招聘web前端开发
-          
-          ul.joblist-detail
-            li 上海
-            li 公司:英特尔科技
-            li 月薪:8000-12000
-        li
-          h2 
-            a(href="#") PHP后台开发
-          ul.joblist-detail
-            li 上海
-            li 公司:XXXX科技
-            li 月薪:4000-8000
-        li
-          h2 
-            a(href="#") 寻找高级硬件工程师
-          ul.joblist-detail
-            li 上海
-            li 公司:XXXX科技
-            li 月薪:4000-8000
-
-        li
-          h2 
-            a(href="#") FPGA工程
-          ul.joblist-detail
-            li 上海
-            li 公司:XXXX科技
-            li 月薪:4000-8000
-
+        if jobs.length == 0
+          li
+            h2 目前还没有招聘信息
+        else
+          each job in jobs 
+            li
+              h2 
+                a(href="/job/#{job._id}") #{job.title}
+              ul.joblist-detail
+                li 
+                  span #{job.city}
+                li 公司:
+                  span #{job.company}
+                li 月薪:
+                  span #{job.salary}
+                li 发布日期:
+                  span #{job._id.getTimestamp().yyyymmdd() }
   // Aside Right
   section#sidebar(role='complementary')
     .right-sidebar

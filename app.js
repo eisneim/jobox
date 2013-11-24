@@ -5,6 +5,8 @@ var path = require('path');
 //session
 var MongoStore = require('connect-mongo')(express);
 var flash = require('connect-flash');
+
+var expressValidator = require('express-validator'); //Declare Express-Validator
 var app = express();
 
 var mongoose = require('mongoose');
@@ -21,18 +23,13 @@ var UserSchema = new Schema({
     	hash: String,
 		phone:{ 
 			type: Number, 
-			max:[13, ' `{PATH}`项的值: ({VALUE}) 超过了最大值 ({MAX}).']
+			// max:[13, ' `{PATH}`项的值: ({VALUE}) 超过了最大值 ({MAX}).']
 			// min:
 			},
 		description:String,
 		publisher:{ type:Boolean,default: false},
-		published:[{
-			job_id:Schema.Types.ObjectId,
-		}],
-		applied:[{
-			job_id:Schema.Types.ObjectId,
-			bio:String
-		}]
+		published:Array,
+		applied:Array,
 	}),
 	JobSchema = new mongoose.Schema({
 		title:String,
@@ -48,7 +45,8 @@ var UserSchema = new Schema({
 	});
 var DB={
 		user: mongoose.model('User',UserSchema),
-		job:mongoose.model('Job',JobSchema)
+		job:mongoose.model('Job',JobSchema),
+		ObjectId:mongoose.Types.ObjectId
 	}
 //======routes == 
 var routes = require('./routes')(DB);
@@ -71,7 +69,7 @@ app.use(express.session({
 	cookie: { maxAge: 60000 }
 }));
 app.use(flash());
-app.use(express.csrf());
+// app.use(express.csrf());
 // ======auth===================
 app.use(passport.initialize());
 app.use(passport.session());
@@ -79,6 +77,7 @@ app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+
 
 // =================================app vars meddleware======
  app.use(function(req, res, next)
@@ -88,19 +87,44 @@ app.use(express.methodOverride());
         // console.log(JSON.stringify(req.session));
         res.locals.test_val = 'test value';
         res.locals.csrf = req.session ? req.session._csrfSecret : '';
-        console.log( 'secret: '+req.session._csrfSecret  );
+        // console.log( 'secret: '+req.session._csrfSecret  );
         next();
     });
 
 app.locals({
-    token: function(req, res) {
-        return req.session._csrfSecret;
-    },
+    // token: function(req, res) {
+    //     return req.session._csrfSecret;
+    // },
 
 });
+app.use(expressValidator({
+  errorFormatter: function(param, msg, value) {
+      var namespace = param.split('.')
+      , root    = namespace.shift()
+      , formParam = root;
+
+    while(namespace.length) {
+      formParam += '[' + namespace.shift() + ']';
+    }
+    return {
+      param : formParam,
+      msg   : msg,
+      value : value
+    };
+  }
+}));  //required for Express-Validator
 // ===========before router is middleware === 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+// =======err handling ============
+
+// app.use(function(err, req, res, next) {
+//     if(!err) return next(); // you also need this line
+//     console.log("error!!!:"+err);
+//     res.send("error!!!:"+err);
+// });
 
 // development only
 if ('development' == app.get('env')) {
@@ -133,11 +157,13 @@ function publish_filter(req,res,next){
 
 // =================================routes =========
 app.get('/', routes.home);
+app.get('/category/:category', routes.home);
 app.get('/job/new',publish_filter,routes.new_job);
-// app.post('/new', routes.new_job_post);
-
-// app.get('/job/:name', routes.showjob);
-
+app.post('/job/new', routes.new_job_post);
+app.get('/job/:id',routes.show_job);
+app.get('/job/edit/:id', routes.edit_job);
+app.post('/job/edit/:id', routes.edit_job_post);
+app.get('/job/delete/:id', routes.delete_job);
 // app.get('/login', routes.login);
 app.post('/login',passport.authenticate('local',{
 	failureRedirect:'/',
@@ -153,9 +179,7 @@ app.get('/dashboard',auth_filter,routes.dashboard);
 // app.get('/apply', routes.apply);
 // routes.test();
 
-app.get('/test',function(req,res){
-	res.send(req.session.passport.user);
-});
+app.get('/test',routes.test);
 
 //======server ======
 http.createServer(app).listen(app.get('port'), function(){
