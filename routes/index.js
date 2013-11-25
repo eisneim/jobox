@@ -27,11 +27,15 @@ Date.prototype.yyyymmdd = function() {
     var dd  = this.getDate().toString();                                 
     return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
 }; 
-// ==================================
+function md5(str){
+    var hash = require('crypto').createHash('md5');
+    return hash.update(str+"").digest('hex');
+}
+// ======================================
 	route.home = function(req,res){
 		//do pagindation
 		var pageNumber = req.param('page')?req.param('page')-1 : 0,
-			perPage = 2;
+			perPage = 3;
 
 		var condition = req.params.category? {category:(req.params.category).replace(/-/,'/')}:{};
 		//get job info ,and do pagination 
@@ -39,23 +43,62 @@ Date.prototype.yyyymmdd = function() {
 			.skip(pageNumber * perPage )
 			.limit( perPage ).exec(function(err,jobs){
 				// if err ?
-				DB.job.count({},function(err,count){ 
-					// console.log(pageNumber);
-					res.render('home/index', { 
-						title: 'JobBox工作盒 - nodeJS 实战工程',
-						error:req.flash('error'),
-						message:req.flash('message'),
-						auth:req.session.passport.user,
-						category_array:category_array,
-						city_array:city_array,
-						salary_array:salary_array,
-						active_category: req.params.category,
-						totle_page: Math.round(count/perPage),
-						current_page:pageNumber,
-						jobs:jobs
-					});
+				//count for pagindation
+				DB.job.count(condition,function(err,count){ //
+					
+					//get online user from session 
+					DB.session.find({},function(err,users){
+						// var user = users[0];
+						// for(var key in user){
+						// 	console.log(key);
+						// }
+
+						// console.log(JSON.parse(user._doc.session).passport.user.email);
+						var online_users = [],online_user={};
+						// users.forEach(function(user){
+						// 	var i = JSON.parse(user._doc.session);
+						// 	if (!i.passport.user) continue;
+						// 	online_user = {
+						// 		username: i.passport.user.username ,
+						// 		email_md5: md5( i.passport.user.email )
+						// 	}
+						// 	online_users.push(online_user);
+						// });
+						for(var index =0;index<users.length; index++){
+
+							var i = JSON.parse(users[index]._doc.session);
+							//when someone logout ,the session exits but passport.user ==null
+							if (!i.passport.user) continue;
+
+							online_user = {
+								username: i.passport.user.username ,
+								email_md5: md5( i.passport.user.email )
+							}
+							online_users.push(online_user);
+						}
+						// console.log( online_users );
+
+						res.render('home/index', { 
+							title: 'JobBox工作盒 - nodeJS 实战工程',
+							//
+							error:req.flash('error'),
+							message:req.flash('message'),
+							auth:req.session.passport.user,
+							//
+							category_array:category_array,
+							city_array:city_array,
+							salary_array:salary_array,
+							active_category: req.params.category,
+							//pagination
+							totle_page: Math.round(count/perPage),
+							current_page:pageNumber,
+							//online user
+							online_users:online_users,
+							jobs:jobs
+						});
+					});//online user
 				});//count
-			});
+			});//job
 
 	};
 	route.job_filter = function(req,res){
@@ -106,6 +149,10 @@ Date.prototype.yyyymmdd = function() {
 			});
 		});
 	}
+	route.apply_job = function(req,res){
+		res.send('appling');
+	}
+
 // handle user authentication
 	route.signup = function(req,res){
 		// res.send('show login in form');

@@ -87,8 +87,16 @@ block content
     .right-sidebar
       .sidebar-header
         span 我申请的工作
-      p not yet 
+      p &nbsp;&nbsp;&nbsp;&nbsp;你还没有申请
     .right-sidebar
       .sidebar-header
-        span 最新用户
-      p 侧栏内容
+        span 在线会员
+      ul.online-user-list
+        if online_users.length != 0
+          for user in online_users
+            li
+              img(src="http://www.gravatar.com/avatar/#{user.email_md5}.jpg", alt="#{user.username}")
+              h4=user.username
+        else
+          li
+            h4 当前无会员在线

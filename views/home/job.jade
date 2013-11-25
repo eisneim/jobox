@@ -40,10 +40,12 @@ block content
               span #{job.require_exp}
         li
           p=job.description
-        if auth
-          if !auth.publisher 
-            li.clearfix
-              a.btn_cyan(href="/job/apply/#{job._id}" style="margin-top:20px;margin-bottom:10px;float:right;") 申请这份工作
+        //- if auth
+        if auth && auth.publisher
+          span
+        else
+          li.clearfix
+            a.btn_cyan(href="/job/apply/#{job._id}" style="margin-top:20px;margin-bottom:10px;float:right;") 申请这份工作
 
   // Aside Right
   section#sidebar(role='complementary')

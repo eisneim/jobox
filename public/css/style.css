@@ -460,6 +460,25 @@ select:hover, select:active {
   }
 }
 /*================*/
+.online-user-list li{
+  display: inline-block;
+  padding: 10px;
+  text-align: center;
+}
+.online-user-list li h4{
+  margin: 0px 0 5px 0;
+}
+.online-user-list li img{
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+}
+.online-user-list li img:hover{
+  border: solid 4px #28AD60;
+}
+
+
+
 
 
 

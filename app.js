@@ -42,10 +42,13 @@ var UserSchema = new Schema({
 		isend:{ type: Boolean, default: false },
 		vote:Number,
 		description:String
-	});
+	}),
+	Any = new Schema({ any: {} });
+
 var DB={
 		user: mongoose.model('User',UserSchema),
 		job:mongoose.model('Job',JobSchema),
+		session:mongoose.model('Session',Any),
 		ObjectId:mongoose.Types.ObjectId
 	}
 //======routes == 
@@ -66,7 +69,7 @@ app.use(express.session({
 	store:new MongoStore({
 		mongoose_connection: mongoose.connection
 	}),
-	cookie: { maxAge: 60000 }
+	cookie: { maxAge: 1000*60*60*2 }
 }));
 app.use(flash());
 // app.use(express.csrf());
@@ -165,6 +168,8 @@ app.get('/job/:id',routes.show_job);
 app.get('/job/edit/:id', routes.edit_job);
 app.post('/job/edit/:id', routes.edit_job_post);
 app.get('/job/delete/:id', routes.delete_job);
+app.get('/job/apply/:id',auth_filter,routes.apply_job);
+
 // app.get('/login', routes.login);
 app.post('/login',passport.authenticate('local',{
 	failureRedirect:'/',
@@ -177,7 +182,6 @@ app.post('/signup', routes.signup_post);
 
 app.get('/logout', routes.logout);
 app.get('/dashboard',auth_filter,routes.dashboard);
-// app.get('/apply', routes.apply);
 // routes.test();
 
 app.get('/test',routes.test);
