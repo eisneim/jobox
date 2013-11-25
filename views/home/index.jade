@@ -35,19 +35,25 @@ block content
 
       ul.joblist-ul
         .jobfilter
-          form(id="jobfilter", method="post", action="#")
+          form(id="jobfilter", method="post", action="/")
+            select(name="category" style="display:none;")
+              option(value="#{ active_category?active_category.replace(/-/,'/') :''}") 
             ul
               li
                 span 城市:
-                select(name="city")
-                  each city in city_array
-                    option(value="#{city}") #{city}
+                .dropdown
+                  select.dropdown-select(name="city")
+                    each city in city_array
+                      option(value="#{city}") #{city}
               li
                 span 月薪范围:
-                select(name="salary")
-                  each salary in salary_array
-                    option(value="#{salary}") #{salary}
+                .dropdown
+                  select.dropdown-select(name="salary")
+                    each salary in salary_array
+                      option(value="#{salary}") #{salary}
                 span ￥
+              li
+                button.btn-sm.btn-cyan(type="submit" style="float:right") 过滤
         if jobs.length == 0
           li
             h2 目前还没有招聘信息
@@ -65,6 +71,17 @@ block content
                   span #{job.salary}
                 li 发布日期:
                   span #{job._id.getTimestamp().yyyymmdd() }
+        
+        if totle_page > 1
+          li
+            ul.pagination
+              -for(var i= 1;i<=totle_page;i++){
+                li
+                  if current_page == i-1
+                    a.page_active(href="/#{active_category?'category/'+active_category:''}?page=#{i}") #{i}
+                  else
+                    a(href="/#{active_category?'category/'+active_category:''}?page=#{i}") #{i}
+              -}
   // Aside Right
   section#sidebar(role='complementary')
     .right-sidebar

@@ -29,17 +29,50 @@ Date.prototype.yyyymmdd = function() {
 }; 
 // ==================================
 	route.home = function(req,res){
-		// console.log(JSON.stringify(res));
-			// console.log(req.flash('alert'));
-			var pageNumber = 0,
-				perPage = 3;
-		var condition = req.params.category ? {category:(req.params.category).replace(/-/,'/')}:{};
+		//do pagindation
+		var pageNumber = req.param('page')?req.param('page')-1 : 0,
+			perPage = 2;
+
+		var condition = req.params.category? {category:(req.params.category).replace(/-/,'/')}:{};
 		//get job info ,and do pagination 
 		DB.job.find(condition,{_id:1,title:1,city:1,company:1,salary:1})
 			.skip(pageNumber * perPage )
 			.limit( perPage ).exec(function(err,jobs){
 				// if err ?
-				res.render('home/index', { 
+				DB.job.count({},function(err,count){ 
+					// console.log(pageNumber);
+					res.render('home/index', { 
+						title: 'JobBox工作盒 - nodeJS 实战工程',
+						error:req.flash('error'),
+						message:req.flash('message'),
+						auth:req.session.passport.user,
+						category_array:category_array,
+						city_array:city_array,
+						salary_array:salary_array,
+						active_category: req.params.category,
+						totle_page: Math.round(count/perPage),
+						current_page:pageNumber,
+						jobs:jobs
+					});
+				});//count
+			});
+
+	};
+	route.job_filter = function(req,res){
+		var condition = {};
+
+		if (req.body.category) {
+
+			condition = {
+				salary:req.body.salary,city:req.body.city,category:req.body.category 
+			};
+		}else{
+
+			condition = {salary:req.body.salary,city:req.body.city};
+		}
+
+		DB.job.find(condition,{_id:1,title:1,city:1,company:1,salary:1},function(err,jobs){
+			res.render('home/index', { 
 					title: 'JobBox工作盒 - nodeJS 实战工程',
 					error:req.flash('error'),
 					message:req.flash('message'),
@@ -50,9 +83,9 @@ Date.prototype.yyyymmdd = function() {
 					active_category: req.params.category,
 					jobs:jobs
 				});
-			});
+		});
+	}
 
-	};
 	route.show_job = function(req,res){
 		DB.job.findOne({_id:req.params.id},function(err,job){
 			// if err do something

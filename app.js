@@ -157,6 +157,7 @@ function publish_filter(req,res,next){
 
 // =================================routes =========
 app.get('/', routes.home);
+app.post('/', routes.job_filter);
 app.get('/category/:category', routes.home);
 app.get('/job/new',publish_filter,routes.new_job);
 app.post('/job/new', routes.new_job_post);
