@@ -150,7 +150,38 @@ function md5(str){
 		});
 	}
 	route.apply_job = function(req,res){
-		res.send('appling');
+
+		// firs check if this user already applied this job before
+		var check_exists=false;
+		req.session.passport.user.applied.forEach(function(job_id){
+			if (req.params.id == job_id) check_exists=true;
+			// console.log('jobid:'+job_id);
+		});
+
+		if ( check_exists ) {
+			req.flash('error','你已申请过该工作，发布者将会尽快联系你');
+			return res.redirect('/job/'+ req.params.id );
+		};
+
+		DB.job.update(
+			{_id:req.params.id},
+			{$push:{applicants:req.session.passport.user._id}},
+			function(err,job){
+				if (err) return handleError(err);
+
+				//now push job id to user's applied filed
+				DB.user.update(
+					{_id:req.session.passport.user._id},
+					{$push:{applied:req.params.id}},
+					function(err,user){
+						//now update session info,cause session only update when user login
+						req.session.passport.user.applied.push(req.params.id);
+
+						req.flash('message','成功申请该工作,发布者将会尽快联系你');
+						res.redirect('/job/'+ req.params.id );
+				});//end of push job id
+		});//push userid to job
+
 	}
 
 // handle user authentication
@@ -210,11 +241,14 @@ function md5(str){
 	route.dashboard = function(req,res){
 		if (req.session.passport.user.publisher) {
 			//published job's _id
-			DB.user.findOne({email:req.session.passport.user.email},{_id:1,published:1},function(err,publisher){
+			DB.user.findOne({email:req.session.passport.user.email},{_id:1,published:1,applicants:1},function(err,publisher){
 				// res.send(JSON.stringify(publisher.published );
-				DB.job.find({_id:{$in:publisher.published } },function(err,jobs){
+				DB.job.find({_id:{$in:publisher.published }},
+					{title:1,applicants:1}).populate('applicants').exec(function(err,jobs){
 					// res.send(JSON.stringify(jobs));
 					// if err 
+					console.log( jobs[0]);
+
 					res.render('user/dashboard_publisher',{
 						title:'JobBox工作盒 - 管理招聘信息',
 						error:req.flash('error'),
@@ -229,8 +263,13 @@ function md5(str){
 			//get the job
 			// DB.job.find({ })
 			
-		}else{
-			res.render('user/dashboard',{
+		}else{//normal user's dashboard
+
+			DB.job.find({ _id:{$in:req.session.passport.user.applied} },{},function(err,jobs){
+
+			});
+
+			res.render('user/dashboard_user',{
 				title:'JobBox工作盒 - 个人中心',
 				error:req.flash('error'),
 				message:req.flash('message'),
@@ -337,13 +376,14 @@ function md5(str){
 	        res.redirect('/job/edit/'+req.params.id);
 	    }
 	}
+
 	route.delete_job = function(req,res){
 		DB.job.remove({_id:req.params.id },function(err,job){
-
 			if (err) return handleError(err);
-
-			DB.user.update({published:DB.ObjectId(req.params.id ) },
-				{$pull:{ published:DB.ObjectId(req.params.id) }},
+			//if job is removed, job's id must be removed in the user's collection
+			//if not, app will crush due to broken relation.
+			DB.user.update({$or:[{ published:DB.ObjectId(req.params.id )},{applied:DB.ObjectId(req.params.id )}]},
+				{$pull:{ published:DB.ObjectId(req.params.id),applied:DB.ObjectId(req.params.id) }},
 				function(err,user){
 				
 				if (err) return handleError(err);

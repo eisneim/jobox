@@ -31,15 +31,13 @@ block content
 							h2=job.title
 							a.btn-grey.btn-sm(href="/job/delete/#{job._id}" style="margin-right:20px;") 删除
 							a.btn-cyan.btn-sm(href="/job/edit/#{job._id}") 编辑
-							if job.applicants && job.applicants.length !== 0
-								each applicant in job.applicants
-									ul.joblist-detail.applied_users
-										li
-											span=applicant.username
-										li Email:
-											span=applicant.email
-										li 手机:
-											span=applicant.phone
+							ul.joblist-detail.applied_users
+								li
+									span Eisneim
+								li Email:
+									span eisneim1@gmail.com
+								li 手机:
+									span 13478782
 
 	// Aside Right
 	section#sidebar(role='complementary')

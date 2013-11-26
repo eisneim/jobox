@@ -28,8 +28,8 @@ var UserSchema = new Schema({
 			},
 		description:String,
 		publisher:{ type:Boolean,default: false},
-		published:Array,
-		applied:Array,
+		published:[{type:Schema.Types.ObjectId,ref:'Job'}],
+		applied:[{type:Schema.Types.ObjectId,ref:'Job'}],
 	}),
 	JobSchema = new mongoose.Schema({
 		title:String,
@@ -41,7 +41,8 @@ var UserSchema = new Schema({
 		require_exp:String,
 		isend:{ type: Boolean, default: false },
 		vote:Number,
-		description:String
+		description:String,
+		applicants:[{ type:Schema.Types.ObjectId,ref:'User'}]
 	}),
 	Any = new Schema({ any: {} });
 
