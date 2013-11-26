@@ -170,6 +170,7 @@ app.get('/job/edit/:id', routes.edit_job);
 app.post('/job/edit/:id', routes.edit_job_post);
 app.get('/job/delete/:id', routes.delete_job);
 app.get('/job/apply/:id',auth_filter,routes.apply_job);
+app.get('/job/cancel/:id',auth_filter,routes.cancel_job);
 
 // app.get('/login', routes.login);
 app.post('/login',passport.authenticate('local',{

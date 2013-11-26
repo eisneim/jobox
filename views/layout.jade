@@ -25,7 +25,8 @@ html.no-js
               if auth
                 ul
                   li
-                    a(href="/dashboard")=auth.username
+                    //auth.username
+                    a(href="/dashboard") 个人中心
                   li
                     a(href="/logout") 登出
                   if auth.publisher

@@ -9,6 +9,11 @@ var city_array = ['北京','上海','成都','杭州','广州','其他'],
 	category_array = ['IT/互联网','电子/通信','市场/销售','人事/管理','贸易/物流','医疗/护理','教育/培训','制造/生产'];
 
 function job_form_validate(req){
+	req.sanitize('title').trim().entityEncode();
+	req.sanitize('company').trim().entityEncode();
+	req.sanitize('hire_number').trim();
+	req.sanitize('require_exp').trim().entityEncode();
+	req.sanitize('description').trim().entityEncode();
 	req.assert('title', '标题为必填项且不超过50字').len(3,50).notEmpty();
     req.assert('company', '公司为必填项').notEmpty();
     req.assert('city', '请选择正确的城市').notEmpty().isIn(city_array);
@@ -17,7 +22,22 @@ function job_form_validate(req){
     req.assert('hire_number', '招聘人数必填,且必须为数字').notEmpty().isNumeric();
     req.assert('require_exp', '经验要求必填').notEmpty();
     req.assert('description', '工作描述必填且不少于10字').notEmpty().len(10,1000);
+
     return req.validationErrors();
+}
+function login_form_validate(req){
+	req.assert('email', '请输入正确的email地址').isEmail().notEmpty();
+	req.assert('password', '密码必填且必须在4至12字之间').len(4,12).notEmpty();
+	return req.validationErrors();
+}
+function signup_form_validate(req){
+	req.sanitize('username').trim();
+	req.assert('username', '用户名必须在2至10个字符之间').len(2,10).notEmpty();
+	req.assert('email', '请输入正确的email地址').isEmail().notEmpty();
+	req.assert('password', '密码必填且必须在4至12字之间').len(4,12).notEmpty();
+	req.assert('password_confirm', '两次密码不一致！').equals(req.body.password).notEmpty();
+	req.assert('phone', '请输入合法的电话号码!').isNumeric().len(4,15).notEmpty();
+	return req.validationErrors();
 }
 // this func will format Date object : 2013-12-6
 Date.prototype.yyyymmdd = function() {         
@@ -54,16 +74,8 @@ function md5(str){
 						// }
 
 						// console.log(JSON.parse(user._doc.session).passport.user.email);
+						//extract user info from session string
 						var online_users = [],online_user={};
-						// users.forEach(function(user){
-						// 	var i = JSON.parse(user._doc.session);
-						// 	if (!i.passport.user) continue;
-						// 	online_user = {
-						// 		username: i.passport.user.username ,
-						// 		email_md5: md5( i.passport.user.email )
-						// 	}
-						// 	online_users.push(online_user);
-						// });
 						for(var index =0;index<users.length; index++){
 
 							var i = JSON.parse(users[index]._doc.session);
@@ -94,6 +106,7 @@ function md5(str){
 							current_page:pageNumber,
 							//online user
 							online_users:online_users,
+							visiter_nubmer:users.length,
 							jobs:jobs
 						});
 					});//online user
@@ -184,20 +197,45 @@ function md5(str){
 
 	}
 
+	route.cancel_job = function(req,res){
+		var job_id = req.params.id,
+			user_id = req.session.passport.user._id;
+		DB.job.update({_id: job_id },{$pull:{applicants: user_id }},function(err,job){
+			DB.user.update({_id: user_id},{$pull:{applied:job_id }},function(){
+				if (err) return handleError(err);
+				
+				//we must remove id from session as well, display dashboard will need it
+				var i = req.session.passport.user.applied.indexOf(job_id);
+				if(i != -1) {
+					req.session.passport.user.applied.splice(i, 1);
+				}
+				
+				req.flash('message','您已取消该工作的申请');
+				res.redirect('/dashboard');
+			});
+
+		});
+	}
+
 // handle user authentication
 	route.signup = function(req,res){
 		// res.send('show login in form');
 		res.render('user/signup',{title:'JobBox工作盒 - 注册新用户',
 				error:req.flash('error'),
 				message:req.flash('message'),
+				form_err:req.flash('form_err')
 			});
 	}
 	route.signup_post = function(req,res){
 		var b = req.body;
 		//simple validate
-		if ( b.password == b.password_confirm ) {
+
+		var errors = signup_form_validate(req);
+
+		if ( !errors ){
+			// console.log('no err:'+errors);
 			hash(b.password, function (err, salt, hash) {
-		        if (err) throw err;
+		        if (err) return handleError(err);
 		        var new_user = {
 						username: b.username,
 						email: b.email,
@@ -213,11 +251,11 @@ function md5(str){
 					new_user.publisher=true;
 				}
 				
-				console.log(new_user);
+				// console.log(new_user);
 				//insert into db
 				DB.user.create(new_user,function(err,user){
 					if (err) throw err;
-					req.flash('message','welcome');
+					req.flash('message','您已成功注册，现在就试试登录吧。');
 					res.redirect('/')
 					// passport.authenticate('local',{
 					// 	failureRedirect:'/',
@@ -229,12 +267,9 @@ function md5(str){
 
 		    });//end of hash
 		}else{
-			req.flash('error', '两次密码不匹配');
-			res.redirect('/');
+			req.flash('form_err',errors);
+			res.redirect('/signup');
 		}
-
-		
-
 
 	};//end of route
 
@@ -265,16 +300,21 @@ function md5(str){
 			
 		}else{//normal user's dashboard
 
-			DB.job.find({ _id:{$in:req.session.passport.user.applied} },{},function(err,jobs){
+			DB.job.find({ _id:{$in:req.session.passport.user.applied} },
+				{title:1},
+				function(err,jobs){
+
+					res.render('user/dashboard_user',{
+						title:'JobBox工作盒 - 个人中心',
+						error:req.flash('error'),
+						message:req.flash('message'),
+						auth:req.session.passport.user,
+						jobs:jobs
+					});
 
 			});
 
-			res.render('user/dashboard_user',{
-				title:'JobBox工作盒 - 个人中心',
-				error:req.flash('error'),
-				message:req.flash('message'),
-				auth:req.session.passport.user
-			});
+			
 		};
 		
 	}

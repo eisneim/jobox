@@ -21,23 +21,17 @@ block content
 
 			ul.joblist-ul
 				.jobfilter
-					h2(style="text-align:center;") 我发布的招聘信息
+					h2(style="text-align:center;margin:0px;") 我申请的工作
 				if jobs.length == 0
 					li
-						h2 你目前还没有发布过招聘信息
+						h2 你目前还没有申请过任何工作
 				else
 					each job in jobs 
 						li
-							h2=job.title
-							a.btn-grey.btn-sm(href="/job/delete/#{job._id}" style="margin-right:20px;") 删除
-							a.btn-cyan.btn-sm(href="/job/edit/#{job._id}") 编辑
-							ul.joblist-detail.applied_users
-								li
-									span Eisneim
-								li Email:
-									span eisneim1@gmail.com
-								li 手机:
-									span 13478782
+							a(href="/job/#{job._id}", target="_blank")
+								h2=job.title
+							a.btn-grey.btn-sm(href="/job/cancel/#{job._id}" style="margin-right:20px;") 取消申请
+							
 
 	// Aside Right
 	section#sidebar(role='complementary')

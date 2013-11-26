@@ -8,6 +8,12 @@ block content
 					h3 新用户注册
 				li
 					form.clearfix(id="signup-form" method="POST" action="/signup")
+						if form_err && form_err.length!=0
+							.form_err
+								span.close-icon &#10005;
+								ul
+									each err in form_err
+										li=err.msg
 						input(type='hidden', name='_csrf', value="#{csrf}")
 						input(type="text" name="email" placeholder="Email")
 						input(type="text" name="username" placeholder="用户名")

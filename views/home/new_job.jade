@@ -11,7 +11,7 @@ block content
           h3 添加新招聘信息
         li
           form(id="new_job", method="POST", action="/job/new")
-            if (form_err.length)!==0
+            if form_err && form_err.length!==0
               .form_err
                 span.close-icon &#10005;
                 ul
