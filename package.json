@@ -8,7 +8,7 @@
   "dependencies": {
     "express": "*",
     "jade": "*",
-    "mongoose": "2.7.0",
+    "mongoose": "3.*",
     "connect-mongo": "~0.4.0",
     "passport": "~0.1.17",
     "passport-local": "~0.1.6",

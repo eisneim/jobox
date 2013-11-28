@@ -146,13 +146,14 @@ header h1{
     border:solid 1px #35373d;
 }
 
-.navwarper>.cate-ul >li{
+.cate-ul >li{
     text-align: center;
     padding: 10px;
+    padding-left: 15px;
     border-bottom: solid 1px #35373d;
 }
 
-.navwarper>.cate-ul >li:hover{
+.cate-ul >li:hover{
     background-color: #16A89E;
     -webkit-transition: all .25s ease-out;
        -moz-transition: all .25s ease-out;
@@ -496,8 +497,8 @@ select:hover, select:active {
 [role="complementary"] {
     position: relative;
     display: block;
-    /*-webkit-transition: .3s all ease;*/
-    /*transition: .3s all ease;*/
+    -webkit-transition: .3s all ease;
+    transition: .3s all ease;
 }
 
     /* js enabled / Default state  */

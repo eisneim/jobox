@@ -54,7 +54,7 @@ block content
                 span ￥
               li
                 button.btn-sm.btn-cyan(type="submit" style="float:right") 过滤
-        if jobs.length == 0
+        if !jobs || jobs.length == 0
           li
             h2 目前还没有招聘信息
         else
@@ -86,8 +86,14 @@ block content
   section#sidebar(role='complementary')
     .right-sidebar
       .sidebar-header
-        span 我申请的工作
-      p &nbsp;&nbsp;&nbsp;&nbsp;你还没有申请
+        span 热门工作
+      if hot_jobs && hot_jobs.length !== 0
+        ul.cate-ul
+          each hot_job in hot_jobs
+            li(style="text-align:left;")
+              a(href="/job/#{hot_job._id}") #{hot_job.title[0]}(#{hot_job.len})
+      else
+        p &nbsp;&nbsp;&nbsp;&nbsp;还没有热门工作
     .right-sidebar
       .sidebar-header
         span 在线会员

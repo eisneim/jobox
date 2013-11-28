@@ -9,11 +9,11 @@ var city_array = ['北京','上海','成都','杭州','广州','其他'],
 	category_array = ['IT/互联网','电子/通信','市场/销售','人事/管理','贸易/物流','医疗/护理','教育/培训','制造/生产'];
 
 function job_form_validate(req){
-	req.sanitize('title').trim().entityEncode();
-	req.sanitize('company').trim().entityEncode();
+	req.sanitize('title').trim();
+	req.sanitize('company').trim();
 	req.sanitize('hire_number').trim();
-	req.sanitize('require_exp').trim().entityEncode();
-	req.sanitize('description').trim().entityEncode();
+	req.sanitize('require_exp').trim();
+	req.sanitize('description').trim();
 	req.assert('title', '标题为必填项且不超过50字').len(3,50).notEmpty();
     req.assert('company', '公司为必填项').notEmpty();
     req.assert('city', '请选择正确的城市').notEmpty().isIn(city_array);
@@ -58,8 +58,14 @@ function md5(str){
 			perPage = 3;
 
 		var condition = req.params.category? {category:(req.params.category).replace(/-/,'/')}:{};
+		
+		if (req.filter_condition) {
+			condition = req.filter_condition;
+			// console.log('home condition:'+JSON.stringify( req.filter_condition ));
+		};
+
 		//get job info ,and do pagination 
-		DB.job.find(condition,{_id:1,title:1,city:1,company:1,salary:1})
+		DB.job.find(condition).select('_id title city company salary').sort('-_id')
 			.skip(pageNumber * perPage )
 			.limit( perPage ).exec(function(err,jobs){
 				// if err ?
@@ -88,27 +94,38 @@ function md5(str){
 							}
 							online_users.push(online_user);
 						}
-						// console.log( online_users );
-
-						res.render('home/index', { 
-							title: 'JobBox工作盒 - nodeJS 实战工程',
-							//
-							error:req.flash('error'),
-							message:req.flash('message'),
-							auth:req.session.passport.user,
-							//
-							category_array:category_array,
-							city_array:city_array,
-							salary_array:salary_array,
-							active_category: req.params.category,
-							//pagination
-							totle_page: Math.round(count/perPage),
-							current_page:pageNumber,
-							//online user
-							online_users:online_users,
-							visiter_nubmer:users.length,
-							jobs:jobs
-						});
+						
+						//find most poplular job,by looking at how many applicants they have
+						DB.job.aggregate(
+							{ $project :{title:1,applicants:1 } },
+							{ $unwind : "$applicants" },
+							{ $group : { _id : "$_id", len : { $sum : 1 },title:{$addToSet:'$title'} } },
+							{ $sort : { len : -1 } },
+							{ $limit : 3 }
+						).exec(function(err,hot_jobs){
+							
+							res.render('home/index', { 
+								title: 'JobBox工作盒 - nodeJS 实战工程',
+								//
+								error:req.flash('error'),
+								message:req.flash('message'),
+								auth:req.session.passport.user,
+								//
+								category_array:category_array,
+								city_array:city_array,
+								salary_array:salary_array,
+								active_category: req.params.category,
+								//pagination
+								totle_page: Math.round(count/perPage),
+								current_page:pageNumber,
+								//online user
+								online_users:online_users,
+								visiter_nubmer:users.length,
+								hot_jobs:hot_jobs,
+								jobs:jobs
+							});
+						});//end of find hot job
+						
 					});//online user
 				});//count
 			});//job
@@ -118,7 +135,6 @@ function md5(str){
 		var condition = {};
 
 		if (req.body.category) {
-
 			condition = {
 				salary:req.body.salary,city:req.body.city,category:req.body.category 
 			};
@@ -126,20 +142,8 @@ function md5(str){
 
 			condition = {salary:req.body.salary,city:req.body.city};
 		}
-
-		DB.job.find(condition,{_id:1,title:1,city:1,company:1,salary:1},function(err,jobs){
-			res.render('home/index', { 
-					title: 'JobBox工作盒 - nodeJS 实战工程',
-					error:req.flash('error'),
-					message:req.flash('message'),
-					auth:req.session.passport.user,
-					category_array:category_array,
-					city_array:city_array,
-					salary_array:salary_array,
-					active_category: req.params.category,
-					jobs:jobs
-				});
-		});
+		req.filter_condition = condition;
+		return route.home(req,res);
 	}
 
 	route.show_job = function(req,res){
@@ -203,7 +207,7 @@ function md5(str){
 		DB.job.update({_id: job_id },{$pull:{applicants: user_id }},function(err,job){
 			DB.user.update({_id: user_id},{$pull:{applied:job_id }},function(){
 				if (err) return handleError(err);
-				
+
 				//we must remove id from session as well, display dashboard will need it
 				var i = req.session.passport.user.applied.indexOf(job_id);
 				if(i != -1) {
@@ -434,9 +438,18 @@ function md5(str){
 	}
 
 	route.test = function(req,res){
-		DB.user.find({published:DB.ObjectId("5291b49eb445910000000001")},function(err,user){
-			res.json(user);
+		//get 3 most applied job
+		DB.job.aggregate(
+			{ $project :{title:1,applicants:1 } },
+			{ $unwind : "$applicants" },
+			{ $group : { _id : "$_id", len : { $sum : 1 },title:{$addToSet:'$title'} } },
+			{ $sort : { len : -1 } },
+			{ $limit : 3 }
+		).exec(function(err,jobs){
+			console.log(jobs);
+			res.json(jobs);
 		});
+
 	}
 
 
