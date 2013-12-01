@@ -497,8 +497,8 @@ select:hover, select:active {
 [role="complementary"] {
     position: relative;
     display: block;
-    -webkit-transition: .3s all ease;
-    transition: .3s all ease;
+    -webkit-transition: .3s margin ease;
+    transition: .3s margin ease;
 }
 
     /* js enabled / Default state  */
